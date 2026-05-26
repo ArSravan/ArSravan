@@ -28,6 +28,8 @@ Predictive analytics application using Flask and Docker for academic performance
 ## Hamburg Event Analytics System
 Data engineering and analytics pipeline using Scrapy, MongoDB, and aggregation-based event analysis.
 
+## EV Charging Demand & Utilization Pipeline on AWS
+End-to-end cloud data engineering pipeline for EV charging analytics using AWS S3, AWS Glue, Redshift Serverless, Prefect, and Streamlit. Built integrated analytics workflows combining real-world infrastructure data with synthetic charging-session datasets for KPI analysis, forecasting, and operator performance monitoring.
 
 ## 🌐 Socials:
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-%230077B5.svg?logo=linkedin&logoColor=white)](https://linkedin.com/in/sravan-a-r) [![email](https://img.shields.io/badge/Email-D14836?logo=gmail&logoColor=white)](mailto:arsravan88@gmail.com) 
