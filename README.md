@@ -41,8 +41,6 @@ End-to-end cloud data engineering pipeline for EV charging analytics using AWS S
 ![](https://streak-stats.demolab.com/?user=ArSravan&theme=tokyonight&hide_border=false)<br/>
 ![](https://github-readme-stats.shion.dev/api/top-langs/?username=ArSravan&theme=tokyonight&hide_border=false&include_all_commits=false&count_private=false&layout=compact)
 
-HackerRank
-<p align="center"> <a href="https://www.hackerrank.com/profile/arsravan88"> <img src="./hackerrank_stats.svg" alt="Sravan's HackerRank Statistics" width="850"/> </a> </p> <p align="center"> <sub>Python · Problem Solving · Continuous Learning</sub> </p>
 
 ## HackerRank
 
