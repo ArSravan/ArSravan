@@ -44,5 +44,21 @@ End-to-end cloud data engineering pipeline for EV charging analytics using AWS S
 HackerRank
 <p align="center"> <a href="https://www.hackerrank.com/profile/arsravan88"> <img src="./hackerrank_stats.svg" alt="Sravan's HackerRank Statistics" width="850"/> </a> </p> <p align="center"> <sub>Python · Problem Solving · Continuous Learning</sub> </p>
 
+## HackerRank
+
+<p align="center">
+  <a href="https://www.hackerrank.com/profile/arsravan88">
+    <img src="./hackerrank_stats.svg" alt="Sravan's HackerRank Statistics" width="850"/>
+  </a>
+</p>
+
+<p align="center">
+  <sub>Python · Problem Solving · Continuous Learning</sub>
+</p>
+
+<p align="center">
+  <img src="./hackerrank_activity.svg" alt="HackerRank Activity" width="900"/>
+</p>
+
 <!-- Proudly created with GPRM ( https://gprm.itsvg.in ) -->
 

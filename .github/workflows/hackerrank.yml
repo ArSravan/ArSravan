@@ -1,0 +1,96 @@
+name: Update HackerRank Stats
+
+on:
+  schedule:
+    # Run every 6 hours
+    - cron: "0 */6 * * *"
+
+  # Allow manual runs from GitHub
+  workflow_dispatch:
+
+  # Also run when the workflow itself is changed
+  push:
+    paths:
+      - ".github/workflows/hackerrank.yml"
+
+jobs:
+  update-hackerrank:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+
+      # ------------------------------------------------------
+      # Checkout repository
+      # ------------------------------------------------------
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ------------------------------------------------------
+      # Setup Python
+      # ------------------------------------------------------
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # ------------------------------------------------------
+      # Install dependencies
+      # ------------------------------------------------------
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      # ------------------------------------------------------
+      # Update HackerRank statistics
+      # ------------------------------------------------------
+
+      - name: Update HackerRank statistics
+        run: |
+          python hackerrank_stats.py
+
+      # ------------------------------------------------------
+      # Track HackerRank activity
+      # ------------------------------------------------------
+
+      - name: Track HackerRank activity
+        run: |
+          python hackerrank_tracker.py
+
+      # ------------------------------------------------------
+      # Generate activity graph
+      # ------------------------------------------------------
+
+      - name: Generate HackerRank activity graph
+        run: |
+          python hackerrank_activity.py
+
+      # ------------------------------------------------------
+      # Commit changes
+      # ------------------------------------------------------
+
+      - name: Commit updated statistics
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add \
+            hackerrank_stats.svg \
+            hackerrank_activity.svg \
+            activity.json
+
+          git diff --cached --quiet || git commit -m "Update HackerRank statistics"
+
+      # ------------------------------------------------------
+      # Push changes
+      # ------------------------------------------------------
+
+      - name: Push changes
+        run: |
+          git push
