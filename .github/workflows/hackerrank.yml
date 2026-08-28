@@ -25,6 +25,9 @@ jobs:
 
       - name: Checkout repository
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
 
       - name: Setup Python
         uses: actions/setup-python@v6
@@ -60,20 +63,7 @@ jobs:
 
           git diff --cached --quiet || git commit -m "Update HackerRank statistics"
 
-      - name: Push changes
-        run: |
-          for i in 1 2 3; do
-            git fetch origin main
-            git rebase origin/main
+          - name: Push changes
+            run: |
+              git push origin HEAD:main
 
-            if git push origin main; then
-              echo "Push successful."
-              exit 0
-            fi
-
-            echo "Push failed. Retrying in 5 seconds..."
-            sleep 5
-          done
-
-          echo "Push failed after 3 attempts."
-          exit 1
