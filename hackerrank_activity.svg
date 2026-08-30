@@ -4558,9 +4558,9 @@ viewBox="0 0 900 250">
     width="11"
     height="11"
     rx="3"
-    fill="#161b22">
+    fill="#006d32">
     <title>
-        30 Aug 2026: 0 problems
+        30 Aug 2026: 2 problems
     </title>
 </rect>
 
@@ -4573,7 +4573,7 @@ viewBox="0 0 900 250">
     font-family="Arial, Helvetica, sans-serif"
     font-size="12"
     font-weight="600">
-    2
+    4
 </text>
 
 <text
@@ -4593,7 +4593,7 @@ viewBox="0 0 900 250">
     font-family="Arial, Helvetica, sans-serif"
     font-size="12"
     font-weight="600">
-    2
+    3
 </text>
 
 <text
@@ -4613,7 +4613,7 @@ viewBox="0 0 900 250">
     font-family="Arial, Helvetica, sans-serif"
     font-size="12"
     font-weight="600">
-    0
+    3
 </text>
 
 <text
@@ -4633,7 +4633,7 @@ viewBox="0 0 900 250">
     font-family="Arial, Helvetica, sans-serif"
     font-size="12"
     font-weight="600">
-    2
+    3
 </text>
 
 <text
