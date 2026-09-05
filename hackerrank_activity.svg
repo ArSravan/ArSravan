@@ -4633,6 +4633,18 @@ viewBox="0 0 900 250">
     </title>
 </rect>
 
+<rect
+    x="808"
+    y="184"
+    width="11"
+    height="11"
+    rx="3"
+    fill="#161b22">
+    <title>
+        05 Sep 2026: 0 problems
+    </title>
+</rect>
+
 <!-- Statistics -->
 
 <text
@@ -4682,7 +4694,7 @@ viewBox="0 0 900 250">
     font-family="Arial, Helvetica, sans-serif"
     font-size="12"
     font-weight="600">
-    3
+    0
 </text>
 
 <text
