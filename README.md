@@ -58,5 +58,21 @@ End-to-end cloud data engineering pipeline for EV charging analytics using AWS S
   <img src="./hackerrank_activity.svg" alt="HackerRank Activity" width="900"/>
 </p>
 
+## StrataScratch
+
+<p align="center">
+  <a href="https://platform.stratascratch.com/profile-code/Sravan">
+    <img src="./stratascratch_stats.svg" alt="Sravan's StrataScratch Statistics" width="850"/>
+  </a>
+</p>
+
+<p align="center">
+  <sub>SQL · Data Science · Continuous Learning</sub>
+</p>
+
+<p align="center">
+  <img src="./stratascratch_activity.svg" alt="StrataScratch Activity" width="900"/>
+</p>
+
 <!-- Proudly created with GPRM ( https://gprm.itsvg.in ) -->
 
