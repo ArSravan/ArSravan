@@ -23,9 +23,7 @@ DIFFICULTY_QUERY = """
 query InterviewProgress(
     $username: String!,
     $questionClass: QuestionClassEnum!,
-    $codeType: Int,
-    $startDate: Date,
-    $endDate: Date
+    $codeType: Int
 ) {
     analytics(username: $username) {
         id
