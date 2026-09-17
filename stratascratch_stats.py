@@ -1,4 +1,3 @@
-import json
 import os
 from pathlib import Path
 
@@ -10,7 +9,6 @@ GRAPHQL_URL = "https://api.stratascratch.com/graphql/"
 
 PROFILE_URL = f"https://platform.stratascratch.com/profile-code/{USERNAME}"
 
-ACTIVITY_FILE = Path("stratascratch_activity.json")
 OUTPUT_FILE = Path("stratascratch_stats.svg")
 
 TOKEN = os.environ.get("STRATASCRATCH_TOKEN")
@@ -21,19 +19,31 @@ HEADERS = {
     "User-Agent": "Mozilla/5.0"
 }
 
-CATEGORY_QUERY = """
-query CategoryBreakdown($username: String!) {
+DIFFICULTY_QUERY = """
+query InterviewProgress(
+    $username: String!,
+    $questionClass: QuestionClassEnum!,
+    $codeType: Int,
+    $startDate: Date,
+    $endDate: Date
+) {
     analytics(username: $username) {
         id
-        solvedByType
-        solvedNonCodingByType {
-            systemDesign
-            probability
-            businessCase
-            statistics
-            modeling
-            technical
-            product
+        byClass(questionClass: $questionClass) {
+            all {
+                all
+                easy
+                medium
+                hard
+                __typename
+            }
+            solved(codeType: $codeType) {
+                all
+                easy
+                medium
+                hard
+                __typename
+            }
             __typename
         }
         __typename
@@ -42,22 +52,17 @@ query CategoryBreakdown($username: String!) {
 """
 
 
-def load_activity():
-    if not ACTIVITY_FILE.exists():
-        return {}
-
-    with ACTIVITY_FILE.open("r", encoding="utf-8") as file:
-        return json.load(file)
-
-
-def get_category_breakdown():
+def get_difficulty_breakdown():
     if not TOKEN:
         raise RuntimeError("STRATASCRATCH_TOKEN environment variable is not set.")
 
     payload = {
-        "operationName": "CategoryBreakdown",
-        "variables": {"username": USERNAME},
-        "query": CATEGORY_QUERY
+        "operationName": "InterviewProgress",
+        "variables": {
+            "username": USERNAME,
+            "questionClass": "ALL"
+        },
+        "query": DIFFICULTY_QUERY
     }
 
     response = requests.post(GRAPHQL_URL, headers=HEADERS, json=payload, timeout=30)
@@ -69,38 +74,23 @@ def get_category_breakdown():
         raise RuntimeError(f"StrataScratch GraphQL error: {data['errors']}")
 
     analytics = data.get("data", {}).get("analytics") or {}
-
-    solved_by_type = json.loads(analytics.get("solvedByType") or "{}")
-    non_coding = analytics.get("solvedNonCodingByType") or {}
-
-    concept_total = sum(
-        value
-        for key, value in non_coding.items()
-        if key != "__typename"
-    )
+    by_class = analytics.get("byClass") or {}
+    solved = by_class.get("solved") or {}
 
     return {
-        "analytical": solved_by_type.get("analytics", 0),
-        "algorithmic": solved_by_type.get("algorithms", 0),
-        "visualization": solved_by_type.get("visualizations", 0),
-        "concept": concept_total
-    }
-
-
-def get_stratascratch_stats():
-    activity = load_activity()
-    categories = get_category_breakdown()
-
-    return {
-        "solved": sum(activity.values()),
-        "categories": categories
+        "solved": solved.get("all", 0),
+        "easy": solved.get("easy", 0),
+        "medium": solved.get("medium", 0),
+        "hard": solved.get("hard", 0)
     }
 
 
 def generate_svg(stats):
 
     solved = stats["solved"]
-    categories = stats["categories"]
+    easy = stats["easy"]
+    medium = stats["medium"]
+    hard = stats["hard"]
 
     svg = f"""<svg
     width="850"
@@ -169,56 +159,70 @@ def generate_svg(stats):
         SOLVED
     </text>
 
-    <!-- By category -->
+    <!-- Easy -->
 
     <text
         x="260"
-        y="110"
+        y="130"
+        fill="#f0f6fc"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="26"
+        font-weight="600">
+        {easy}
+    </text>
+
+    <text
+        x="260"
+        y="153"
         fill="#8b949e"
         font-family="Arial, Helvetica, sans-serif"
         font-size="11"
         letter-spacing="1">
-        BY CATEGORY
+        EASY
+    </text>
+
+    <!-- Medium -->
+
+    <text
+        x="470"
+        y="130"
+        fill="#f0f6fc"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="26"
+        font-weight="600">
+        {medium}
     </text>
 
     <text
-        x="260"
-        y="135"
+        x="470"
+        y="153"
+        fill="#8b949e"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="11"
+        letter-spacing="1">
+        MEDIUM
+    </text>
+
+    <!-- Hard -->
+
+    <text
+        x="650"
+        y="130"
         fill="#f0f6fc"
         font-family="Arial, Helvetica, sans-serif"
-        font-size="13"
+        font-size="26"
         font-weight="600">
-        Analytical: {categories['analytical']}
+        {hard}
     </text>
 
     <text
-        x="260"
-        y="158"
-        fill="#f0f6fc"
+        x="650"
+        y="153"
+        fill="#8b949e"
         font-family="Arial, Helvetica, sans-serif"
-        font-size="13"
-        font-weight="600">
-        Algorithmic: {categories['algorithmic']}
-    </text>
-
-    <text
-        x="530"
-        y="135"
-        fill="#f0f6fc"
-        font-family="Arial, Helvetica, sans-serif"
-        font-size="13"
-        font-weight="600">
-        Visualization: {categories['visualization']}
-    </text>
-
-    <text
-        x="530"
-        y="158"
-        fill="#f0f6fc"
-        font-family="Arial, Helvetica, sans-serif"
-        font-size="13"
-        font-weight="600">
-        Concept: {categories['concept']}
+        font-size="11"
+        letter-spacing="1">
+        HARD
     </text>
 
     <!-- Footer -->
@@ -252,15 +256,14 @@ def main():
 
     print("Generating StrataScratch stats card...")
 
-    stats = get_stratascratch_stats()
+    stats = get_difficulty_breakdown()
 
     print("\nStrataScratch Statistics")
     print("-------------------------")
     print(f"Problems solved : {stats['solved']}")
-    print(f"Analytical      : {stats['categories']['analytical']}")
-    print(f"Algorithmic     : {stats['categories']['algorithmic']}")
-    print(f"Visualization   : {stats['categories']['visualization']}")
-    print(f"Concept         : {stats['categories']['concept']}")
+    print(f"Easy            : {stats['easy']}")
+    print(f"Medium          : {stats['medium']}")
+    print(f"Hard            : {stats['hard']}")
 
     svg = generate_svg(stats)
 
