@@ -48,6 +48,8 @@ jobs:
           python stratascratch_tracker.py
 
       - name: Generate StrataScratch stats card
+        env:
+          STRATASCRATCH_TOKEN: ${{ secrets.STRATASCRATCH_TOKEN }}
         run: |
           python stratascratch_stats.py
 

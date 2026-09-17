@@ -1,13 +1,45 @@
 import json
-from datetime import date, timedelta
+import os
 from pathlib import Path
 
+import requests
+
 USERNAME = "Sravan"
+
+GRAPHQL_URL = "https://api.stratascratch.com/graphql/"
 
 PROFILE_URL = f"https://platform.stratascratch.com/profile-code/{USERNAME}"
 
 ACTIVITY_FILE = Path("stratascratch_activity.json")
 OUTPUT_FILE = Path("stratascratch_stats.svg")
+
+TOKEN = os.environ.get("STRATASCRATCH_TOKEN")
+
+HEADERS = {
+    "Authorization": f"Token {TOKEN}",
+    "Content-Type": "application/json",
+    "User-Agent": "Mozilla/5.0"
+}
+
+CATEGORY_QUERY = """
+query CategoryBreakdown($username: String!) {
+    analytics(username: $username) {
+        id
+        solvedByType
+        solvedNonCodingByType {
+            systemDesign
+            probability
+            businessCase
+            statistics
+            modeling
+            technical
+            product
+            __typename
+        }
+        __typename
+    }
+}
+"""
 
 
 def load_activity():
@@ -18,61 +50,57 @@ def load_activity():
         return json.load(file)
 
 
-def calculate_streaks(activity):
-    dates = sorted(
-        date.fromisoformat(d)
-        for d, count in activity.items()
-        if count > 0
+def get_category_breakdown():
+    if not TOKEN:
+        raise RuntimeError("STRATASCRATCH_TOKEN environment variable is not set.")
+
+    payload = {
+        "operationName": "CategoryBreakdown",
+        "variables": {"username": USERNAME},
+        "query": CATEGORY_QUERY
+    }
+
+    response = requests.post(GRAPHQL_URL, headers=HEADERS, json=payload, timeout=30)
+    response.raise_for_status()
+
+    data = response.json()
+
+    if "errors" in data:
+        raise RuntimeError(f"StrataScratch GraphQL error: {data['errors']}")
+
+    analytics = data.get("data", {}).get("analytics") or {}
+
+    solved_by_type = json.loads(analytics.get("solvedByType") or "{}")
+    non_coding = analytics.get("solvedNonCodingByType") or {}
+
+    concept_total = sum(
+        value
+        for key, value in non_coding.items()
+        if key != "__typename"
     )
 
-    if not dates:
-        return 0, 0
-
-    longest = 1
-    current = 1
-
-    for i in range(1, len(dates)):
-        if dates[i] == dates[i - 1] + timedelta(days=1):
-            current += 1
-            longest = max(longest, current)
-        else:
-            current = 1
-
-    today = date.today()
-
-    if today not in dates:
-        current_streak = 0
-    else:
-        current_streak = 1
-
-        check = today - timedelta(days=1)
-
-        while check in dates:
-            current_streak += 1
-            check -= timedelta(days=1)
-
-    return current_streak, longest
+    return {
+        "analytical": solved_by_type.get("analytics", 0),
+        "algorithmic": solved_by_type.get("algorithms", 0),
+        "visualization": solved_by_type.get("visualizations", 0),
+        "concept": concept_total
+    }
 
 
 def get_stratascratch_stats():
     activity = load_activity()
-
-    current_streak, longest_streak = calculate_streaks(activity)
+    categories = get_category_breakdown()
 
     return {
         "solved": sum(activity.values()),
-        "active_days": sum(1 for count in activity.values() if count > 0),
-        "current_streak": current_streak,
-        "longest_streak": longest_streak
+        "categories": categories
     }
 
 
 def generate_svg(stats):
 
     solved = stats["solved"]
-    active_days = stats["active_days"]
-    current_streak = stats["current_streak"]
-    longest_streak = stats["longest_streak"]
+    categories = stats["categories"]
 
     svg = f"""<svg
     width="850"
@@ -106,7 +134,7 @@ def generate_svg(stats):
         fill="#8b949e"
         font-family="Arial, Helvetica, sans-serif"
         font-size="13">
-        SQL · Data Science Practice
+        Data Science Practice
     </text>
 
     <!-- Divider -->
@@ -141,70 +169,56 @@ def generate_svg(stats):
         SOLVED
     </text>
 
-    <!-- Active days -->
+    <!-- By category -->
 
     <text
         x="260"
-        y="130"
-        fill="#f0f6fc"
+        y="110"
+        fill="#8b949e"
         font-family="Arial, Helvetica, sans-serif"
-        font-size="26"
-        font-weight="600">
-        {active_days}
+        font-size="11"
+        letter-spacing="1">
+        BY CATEGORY
     </text>
 
     <text
         x="260"
-        y="153"
-        fill="#8b949e"
-        font-family="Arial, Helvetica, sans-serif"
-        font-size="11"
-        letter-spacing="1">
-        ACTIVE DAYS
-    </text>
-
-    <!-- Current streak -->
-
-    <text
-        x="470"
-        y="130"
+        y="135"
         fill="#f0f6fc"
         font-family="Arial, Helvetica, sans-serif"
-        font-size="26"
+        font-size="13"
         font-weight="600">
-        {current_streak}
+        Analytical: {categories['analytical']}
     </text>
 
     <text
-        x="470"
-        y="153"
-        fill="#8b949e"
-        font-family="Arial, Helvetica, sans-serif"
-        font-size="11"
-        letter-spacing="1">
-        CURRENT STREAK
-    </text>
-
-    <!-- Longest streak -->
-
-    <text
-        x="650"
-        y="130"
+        x="260"
+        y="158"
         fill="#f0f6fc"
         font-family="Arial, Helvetica, sans-serif"
-        font-size="26"
+        font-size="13"
         font-weight="600">
-        {longest_streak}
+        Algorithmic: {categories['algorithmic']}
     </text>
 
     <text
-        x="650"
-        y="153"
-        fill="#8b949e"
+        x="530"
+        y="135"
+        fill="#f0f6fc"
         font-family="Arial, Helvetica, sans-serif"
-        font-size="11"
-        letter-spacing="1">
-        LONGEST STREAK
+        font-size="13"
+        font-weight="600">
+        Visualization: {categories['visualization']}
+    </text>
+
+    <text
+        x="530"
+        y="158"
+        fill="#f0f6fc"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="13"
+        font-weight="600">
+        Concept: {categories['concept']}
     </text>
 
     <!-- Footer -->
@@ -243,9 +257,10 @@ def main():
     print("\nStrataScratch Statistics")
     print("-------------------------")
     print(f"Problems solved : {stats['solved']}")
-    print(f"Active days     : {stats['active_days']}")
-    print(f"Current streak  : {stats['current_streak']}")
-    print(f"Longest streak  : {stats['longest_streak']}")
+    print(f"Analytical      : {stats['categories']['analytical']}")
+    print(f"Algorithmic     : {stats['categories']['algorithmic']}")
+    print(f"Visualization   : {stats['categories']['visualization']}")
+    print(f"Concept         : {stats['categories']['concept']}")
 
     svg = generate_svg(stats)
 
