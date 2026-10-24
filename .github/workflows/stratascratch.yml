@@ -18,6 +18,10 @@ jobs:
   update-stratascratch:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: stats
+
     permissions:
       contents: write
 
