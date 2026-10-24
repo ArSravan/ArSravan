@@ -46,7 +46,7 @@ End-to-end cloud data engineering pipeline for EV charging analytics using AWS S
 
 <p align="center">
   <a href="https://www.hackerrank.com/profile/arsravan88">
-    <img src="./hackerrank_stats.svg" alt="Sravan's HackerRank Statistics" width="850"/>
+    <img src="./stats/hackerrank_stats.svg" alt="Sravan's HackerRank Statistics" width="850"/>
   </a>
 </p>
 
@@ -55,14 +55,14 @@ End-to-end cloud data engineering pipeline for EV charging analytics using AWS S
 </p>
 
 <p align="center">
-  <img src="./hackerrank_activity.svg" alt="HackerRank Activity" width="900"/>
+  <img src="./stats/hackerrank_activity.svg" alt="HackerRank Activity" width="900"/>
 </p>
 
 ## StrataScratch
 
 <p align="center">
   <a href="https://platform.stratascratch.com/user/Sravan">
-    <img src="./stratascratch_stats.svg" alt="Sravan's StrataScratch Statistics" width="850"/>
+    <img src="./stats/stratascratch_stats.svg" alt="Sravan's StrataScratch Statistics" width="850"/>
   </a>
 </p>
 
@@ -71,7 +71,7 @@ End-to-end cloud data engineering pipeline for EV charging analytics using AWS S
 </p>
 
 <p align="center">
-  <img src="./stratascratch_activity.svg" alt="StrataScratch Activity" width="900"/>
+  <img src="./stats/stratascratch_activity.svg" alt="StrataScratch Activity" width="900"/>
 </p>
 
 <!-- Proudly created with GPRM ( https://gprm.itsvg.in ) -->
