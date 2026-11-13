@@ -4618,9 +4618,9 @@ viewBox="0 0 900 250">
     width="11"
     height="11"
     rx="3"
-    fill="#161b22">
+    fill="#26a641">
     <title>
-        13 Nov 2026: 0 problems
+        13 Nov 2026: 3 problems
     </title>
 </rect>
 
@@ -4633,7 +4633,7 @@ viewBox="0 0 900 250">
     font-family="Arial, Helvetica, sans-serif"
     font-size="12"
     font-weight="600">
-    52
+    55
 </text>
 
 <text
@@ -4653,7 +4653,7 @@ viewBox="0 0 900 250">
     font-family="Arial, Helvetica, sans-serif"
     font-size="12"
     font-weight="600">
-    41
+    42
 </text>
 
 <text
@@ -4673,7 +4673,7 @@ viewBox="0 0 900 250">
     font-family="Arial, Helvetica, sans-serif"
     font-size="12"
     font-weight="600">
-    0
+    1
 </text>
 
 <text
