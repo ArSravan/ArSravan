@@ -63,8 +63,8 @@ jobs:
 
       - name: Commit updated statistics
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898242+github-actions[bot]@users.noreply.github.com"
+          git config user.name "${{ github.event_name == 'workflow_dispatch' && 'ArSravan' || 'github-actions[bot]' }}"
+          git config user.email "${{ github.event_name == 'workflow_dispatch' && '186315610+ArSravan@users.noreply.github.com' || '41898242+github-actions[bot]@users.noreply.github.com' }}"
 
           git add \
             stratascratch_activity.json \
